@@ -1,0 +1,12 @@
+D:\GitHub2\wvsAccessControlCardCHT\wvsAccessControlCardCHT\wvsAccessControlCardCHT\bin\Debug\wvsAccessControlCardCHT.exe.config
+D:\GitHub2\wvsAccessControlCardCHT\wvsAccessControlCardCHT\wvsAccessControlCardCHT\bin\Debug\wvsAccessControlCardCHT.exe
+D:\GitHub2\wvsAccessControlCardCHT\wvsAccessControlCardCHT\wvsAccessControlCardCHT\bin\Debug\wvsAccessControlCardCHT.pdb
+D:\GitHub2\wvsAccessControlCardCHT\wvsAccessControlCardCHT\wvsAccessControlCardCHT\obj\Debug\wvsAccessControlCardCHT.csprojResolveAssemblyReference.cache
+D:\GitHub2\wvsAccessControlCardCHT\wvsAccessControlCardCHT\wvsAccessControlCardCHT\obj\Debug\wvsAccessControlCardCHT.exe
+D:\GitHub2\wvsAccessControlCardCHT\wvsAccessControlCardCHT\wvsAccessControlCardCHT\obj\Debug\wvsAccessControlCardCHT.pdb
+D:\GitHub2\wvsAccessControlCardCHT\wvsAccessControlCardCHT\wvsAccessControlCardCHT\bin\Debug\FISCA.DSAClient.dll
+D:\GitHub2\wvsAccessControlCardCHT\wvsAccessControlCardCHT\wvsAccessControlCardCHT\bin\Debug\FISCA.Authentication.dll
+D:\GitHub2\wvsAccessControlCardCHT\wvsAccessControlCardCHT\wvsAccessControlCardCHT\bin\Debug\FISCA.Data.dll
+D:\GitHub2\wvsAccessControlCardCHT\wvsAccessControlCardCHT\wvsAccessControlCardCHT\bin\Debug\FISCA.DSAUtil.dll
+D:\GitHub2\wvsAccessControlCardCHT\wvsAccessControlCardCHT\wvsAccessControlCardCHT\bin\Debug\FISCA.UDT.dll
+D:\GitHub2\wvsAccessControlCardCHT\wvsAccessControlCardCHT\wvsAccessControlCardCHT\bin\Debug\Config.xml
