@@ -216,7 +216,7 @@ namespace wvsAccessControlCardCHT
                 obj.StudentInfo == null ? "" : obj.StudentInfo.CellPhone,
                 obj.SendDateTime == null ? "null" : "'" + obj.SendDateTime + "'",
                 send_message,
-                cht_msg_id,
+                cht_msg_id == "null" ? "" : cht_msg_id,
                 cht_status,
                 cht_message,
                 cht_chk_date == "" ? "null" : "'" + cht_chk_date + "'"
