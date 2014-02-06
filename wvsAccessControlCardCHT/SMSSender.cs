@@ -186,7 +186,8 @@ namespace wvsAccessControlCardCHT
 
         private void WriteLog(CardData obj, string[] result)
         {
-            string cht_msg_id, cht_status, cht_chk_date, cht_message, send_message;
+            string cht_msg_id, cht_status,cht_message, send_message;
+            string cht_chk_date = "";
 
             if(result != null)
             {
@@ -200,26 +201,26 @@ namespace wvsAccessControlCardCHT
             {
                 cht_msg_id = "";
                 cht_status = "";
-                cht_chk_date = "";
                 cht_message = "";
                 send_message = "";
             }
 
             string sqlCMD = "INSERT INTO $cht_access_control_card.history(card_no,oclock_name,use_time,use_type,ref_student_id,cell_phone,send_date,send_message,cht_msg_id,cht_status,cht_message,cht_chk_date)";
 
-            sqlCMD += string.Format("VALUES('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}','{11}')",
+            sqlCMD += string.Format(" VALUES('{0}','{1}','{2}','{3}',{4},'{5}',{6},'{7}','{8}','{9}','{10}',{11})",
                 obj.CardNo,
                 obj.ClockNo,
-                obj.Time,
+                ParseDateTime(obj.Date, obj.Time).ToString("yyyy/MM/dd HH:mm:ss"),
                 obj.UseType,
-                obj.StudentInfo == null ? "" : obj.StudentInfo.Id,
+                obj.StudentInfo == null ? "null" : obj.StudentInfo.Id,
                 obj.StudentInfo == null ? "" : obj.StudentInfo.CellPhone,
-                obj.SendDateTime,
+                obj.SendDateTime == null ? "null" : "'" + obj.SendDateTime + "'",
                 send_message,
                 cht_msg_id,
                 cht_status,
                 cht_message,
-                cht_chk_date);
+                cht_chk_date == "" ? "null" : "'" + cht_chk_date + "'"
+                );
 
             _U.Execute(sqlCMD);
         }
@@ -237,6 +238,14 @@ namespace wvsAccessControlCardCHT
             string ComputerSendTime = dt.ToString("yyyy/MM/dd HH:mm:ss");
 
             return ComputerSendTime;
+        }
+
+        private DateTime ParseDateTime(string date,string time)
+        {
+            IFormatProvider culture = new System.Globalization.CultureInfo("zh-TW", true);
+            DateTime datetime = DateTime.ParseExact(date+time, "yyyyMMddHHmm", culture);
+
+            return datetime;
         }
 
         //錯誤提醒簡訊

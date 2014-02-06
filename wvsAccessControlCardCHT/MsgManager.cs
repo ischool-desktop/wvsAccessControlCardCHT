@@ -26,9 +26,9 @@ namespace wvsAccessControlCardCHT
                 string arrive_school_sms = row["arrive_school_sms"].ToString();
                 string leave_school_sms = row["leave_school_sms"].ToString();
                 string error_phone = row["error_phone"].ToString();
-                bool enable_arrive_school_sms = row["enable_arrive_school_sms"].ToString() == "1" ? true : false;
-                bool enable_leave_school_sms = row["enable_leave_school_sms"].ToString() == "1" ? true : false;
-                bool enable_error_sms = row["enable_error_sms"].ToString() == "1" ? true : false;
+                bool enable_arrive_school_sms = row["enable_arrive_school_sms"].ToString() == "true" ? true : false;
+                bool enable_leave_school_sms = row["enable_leave_school_sms"].ToString() == "true" ? true : false;
+                bool enable_error_sms = row["enable_error_sms"].ToString() == "true" ? true : false;
 
                 MsgObj obj = new MsgObj(arrive_school_sms, leave_school_sms, error_phone, enable_arrive_school_sms, enable_leave_school_sms, enable_error_sms);
 
