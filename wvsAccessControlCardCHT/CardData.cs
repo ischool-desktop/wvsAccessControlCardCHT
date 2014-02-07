@@ -137,5 +137,21 @@ namespace wvsAccessControlCardCHT
         /// 簡訊發送內容
         /// </summary>
         public string SendMsg { get; set; }
+
+        /// <summary>
+        /// 刷卡日期時間
+        /// </summary>
+        public string DateTime
+        {
+            get 
+            {
+                string year = Date.Substring(0, 4);
+                string month = Date.Substring(4, 2);
+                string day = Date.Substring(6, 2);
+                string hour = Time.Substring(0, 2);
+                string min = Time.Substring(2, 2);
+                return year + "-" + month + "-" + day + " " + hour + ":" + min + ":00";
+            }
+        }
     }
 }

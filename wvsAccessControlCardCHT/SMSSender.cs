@@ -81,7 +81,7 @@ namespace wvsAccessControlCardCHT
                         if (!string.IsNullOrEmpty(card.Value.SendMsg))
                         {
                             //設定傳送訊息(到離時間)
-                            card.Value.SendMsg = card.Value.SendMsg.Replace("{時間}", card.Value.Date + " " + card.Value.Time);
+                            card.Value.SendMsg = card.Value.SendMsg.Replace("{時間}", card.Value.DateTime);
 
                             //傳送
                             string[] result = Submit(card.Value);
