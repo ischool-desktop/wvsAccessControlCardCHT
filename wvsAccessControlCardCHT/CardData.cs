@@ -139,6 +139,11 @@ namespace wvsAccessControlCardCHT
         public string SendMsg { get; set; }
 
         /// <summary>
+        /// 正確刷卡紀錄標記
+        /// </summary>
+        public bool Correct = true;
+
+        /// <summary>
         /// 刷卡日期時間
         /// </summary>
         public string DateTime

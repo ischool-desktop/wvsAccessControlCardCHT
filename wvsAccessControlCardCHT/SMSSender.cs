@@ -63,8 +63,8 @@ namespace wvsAccessControlCardCHT
             {
                 foreach (KeyValuePair<string, CardData> card in cardDic)
                 {
-                    //有學生資料才傳送
-                    if (card.Value.StudentInfo != null)
+                    //有學生資料且是正確刷卡紀錄才傳送
+                    if (card.Value.StudentInfo != null && card.Value.Correct)
                     {
                         //設定傳送訊息(姓名)-到校且有啟動時
                         if (card.Value.UseType == "01" && _Enable_arrive)
@@ -91,7 +91,9 @@ namespace wvsAccessControlCardCHT
                         }
                     }
                     else
-                    {//查無學生相關資料時
+                    {
+                        //查無學生相關資料或刷卡紀錄不正確時
+
                         //有啟動到校提醒需寫Log
                         if (card.Value.UseType == "01" && _Enable_arrive)
                         {
@@ -178,31 +180,42 @@ namespace wvsAccessControlCardCHT
             }
             catch (Exception ex)
             {
-                MessageBox.Show("簡訊發送異常,發送行為將停止...\r\n原因是:" + ex.Message);
-                return null;
+                string[] error = { "傳送至中華電信發生例外錯誤" };
+                return error;
             }
         }
-
 
         private void WriteLog(CardData obj, string[] result)
         {
             string cht_msg_id, cht_status,cht_message, send_message;
             string cht_chk_date = "";
+            cht_msg_id = "";
+            cht_status = "";
+            cht_message = "";
+            send_message = "";
 
-            if(result != null)
+            if (result != null)
             {
-                cht_msg_id = result[2];
-                cht_status = result[1];
-                cht_chk_date = obj.SendDateTime;
-                cht_message = ReturnCodeDic.ContainsKey(cht_status) ? ReturnCodeDic[cht_status] : result[3];
-                send_message = obj.SendMsg;
+                //長度為4是正確的回傳資料
+                if(result.Length == 4)
+                {
+                    cht_msg_id = result[2];
+                    cht_status = result[1];
+                    cht_chk_date = obj.SendDateTime;
+                    cht_message = ReturnCodeDic.ContainsKey(cht_status) ? ReturnCodeDic[cht_status] : result[3];
+                    send_message = obj.SendMsg;
+                }
+                else
+                {
+                    //例外錯誤訊息
+                    cht_message = result[0];
+                }
             }
-            else
+
+            //重複刷卡紀錄辨識
+            if(!obj.Correct)
             {
-                cht_msg_id = "";
-                cht_status = "";
-                cht_message = "";
-                send_message = "";
+                cht_message = "重複的刷卡紀錄,不作傳送";
             }
 
             string sqlCMD = "INSERT INTO $cht_access_control_card.history(card_no,oclock_name,use_time,use_type,ref_student_id,cell_phone,send_date,send_message,cht_msg_id,cht_status,cht_message,cht_chk_date)";
@@ -286,7 +299,7 @@ namespace wvsAccessControlCardCHT
             }
             catch (Exception ex)
             {
-                MessageBox.Show("簡訊發送異常,發送行為將停止...\r\n原因是:" + ex.Message);
+                //MessageBox.Show("簡訊發送異常,發送行為將停止...\r\n原因是:" + ex.Message);
             }
         }
     }

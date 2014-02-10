@@ -15,7 +15,7 @@ namespace wvsAccessControlCardCHT
     public class ACCHistoryParser
     {
         Dictionary<string, CardData> _CardDic;
-        Dictionary<string,StudentObj> _StudentDic;
+        Dictionary<string, StudentObj> _StudentDic;
         QueryHelper _Q;
         string sourceFileName = @Global._Config.CAP_File;
         string descFileName = "";
@@ -30,8 +30,9 @@ namespace wvsAccessControlCardCHT
         /// </summary>
         public Dictionary<string, CardData> getFileRecord()
         {
-           bool pass = true;
-           Dictionary<string,CardData> retVal = new Dictionary<string,CardData>();
+            int index = 0;
+            bool pass = true;
+            Dictionary<string, CardData> retVal = new Dictionary<string, CardData>();
 
             try
             {
@@ -45,12 +46,19 @@ namespace wvsAccessControlCardCHT
                     {
                         CardData card = new CardData(line);
                         //判斷是否解析成功
-                        if(card.GetPass())
+                        if (card.GetPass())
                         {
                             string key = card.CardNo + "_" + card.Date + "_" + card.UseType;
                             if (!retVal.ContainsKey(key))
                             {
                                 retVal.Add(key, card);
+                            }
+                            else
+                            {
+                                //如果重複刷卡,仍加入字典,標註Correct為false
+                                card.Correct = false;
+                                retVal.Add(key + "_" + index, card);
+                                index++;
                             }
                         }
                         else
@@ -87,7 +95,7 @@ namespace wvsAccessControlCardCHT
 
             foreach (KeyValuePair<string, CardData> card in _CardDic)
             {
-                if (!cardNoList.Contains(card.Value.CardNo))
+                if (!cardNoList.Contains(card.Value.CardNo) && card.Value.Correct)
                 {
                     //組SQL用的卡號清單
                     cardNoList.Add(card.Value.CardNo);
@@ -106,7 +114,7 @@ namespace wvsAccessControlCardCHT
 
             //建立字典
             _StudentDic = new Dictionary<string, StudentObj>();
-            foreach(DataRow row in dt.Rows)
+            foreach (DataRow row in dt.Rows)
             {
                 string cardNo = row["card_no"].ToString();
                 string studentID = row["ref_student_id"].ToString();
@@ -119,10 +127,10 @@ namespace wvsAccessControlCardCHT
             }
 
             //設定學生對應資料
-            foreach(KeyValuePair<string,CardData> card in _CardDic)
+            foreach (KeyValuePair<string, CardData> card in _CardDic)
             {
                 if (_StudentDic.ContainsKey(card.Value.CardNo))
-                card.Value.StudentInfo = _StudentDic[card.Value.CardNo];
+                    card.Value.StudentInfo = _StudentDic[card.Value.CardNo];
             }
 
             //備份刷卡紀錄
@@ -144,7 +152,7 @@ namespace wvsAccessControlCardCHT
         /// <summary>
         /// 啟動
         /// </summary>
-        public Dictionary<string,CardData> Start()
+        public Dictionary<string, CardData> Start()
         {
             try
             {
