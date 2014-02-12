@@ -21,6 +21,11 @@ namespace wvsAccessControlCardCHT
         QueryHelper _Q;
         Dictionary<string, string> ReturnCodeDic;
 
+        // 測試帳號
+        string account = "14525";
+        // 測試密碼
+        string password = "14525";
+
         public SMSSender(QueryHelper _Q)
         {
             this._Q = _Q;
@@ -52,12 +57,60 @@ namespace wvsAccessControlCardCHT
             #endregion
         }
 
+        public void Update()
+        {
+            //取得有cht_msg_id但cht_status不為0或2的資料
+            string sql = "SELECT uid,cell_phone,cht_msg_id,cht_status FROM $cht_access_control_card.history WHERE cht_msg_id != '' AND cht_status not in ('0','2')";
+            DataTable dt = _Q.Select(sql);
+
+            foreach(DataRow row in dt.Rows)
+            {
+                string uid = row["uid"].ToString();
+                string phone = row["cell_phone"].ToString();
+                string msgid = row["cht_msg_id"].ToString();
+
+                string[] result = QueryCHT(phone,msgid);
+                
+                if(result.Length == 4)
+                {
+                    //取得時間
+                    string time = SelectTime();
+                    //組更新SQL
+                    string cmd = string.Format("UPDATE $cht_access_control_card.history SET cht_status='{0}',cht_message='{1}',cht_chk_date='{2}' WHERE uid=" + uid,
+                        result[1],
+                        ReturnCodeDic.ContainsKey(result[1]) ? ReturnCodeDic[result[1]] : result[3],
+                        time
+                        );
+
+                    //執行更新
+                    _U.Execute(cmd);
+                }
+                else
+                {
+                    //查詢發生意外時
+                    //取得時間
+                    string time = SelectTime();
+                    //組更新SQL,將cht_status清空
+                    string cmd = string.Format("UPDATE $cht_access_control_card.history SET cht_status=null,cht_message='{0}',cht_chk_date='{1}' WHERE uid=" + uid,
+                        result[0],
+                        time
+                        );
+
+                    //執行更新
+                    _U.Execute(cmd);
+                }
+            }
+        }
+
         public void Start(Dictionary<string, CardData> cardDic, MsgObj msgObj)
         {
             _U = new UpdateHelper(Global.GetDSAConnection());
             _Enable_arrive = msgObj.Enable_arrive;
             _Enable_leave = msgObj.Enable_leave;
             _Enable_error = msgObj.Enable_error;
+
+            //更新之前未完成的訊息狀態
+            Update();
 
             if (cardDic != null)
             {
@@ -117,11 +170,6 @@ namespace wvsAccessControlCardCHT
 
         private string[] Submit(CardData card)
         {
-            // 測試帳號
-            string account = "14525";
-            // 測試密碼
-            string password = "14525";
-
             //儲存發送日期
             card.SendDateTime = SelectTime();
 
@@ -264,11 +312,6 @@ namespace wvsAccessControlCardCHT
         //錯誤提醒簡訊
         private void Alert(MsgObj obj)
         {
-            // 測試帳號
-            string account = "14525";
-            // 測試密碼
-            string password = "14525";
-
             // 訊息編碼
             string msg = HttpUtility.UrlEncode("門禁刷卡機卡機異常,請確認", System.Text.Encoding.Default);
             try
@@ -300,6 +343,57 @@ namespace wvsAccessControlCardCHT
             catch (Exception ex)
             {
                 //MessageBox.Show("簡訊發送異常,發送行為將停止...\r\n原因是:" + ex.Message);
+            }
+        }
+
+        //中華電信MSGID查詢
+        public string[] QueryCHT(string phone,string msgid)
+        {
+            try
+            {
+                StringBuilder sb = new StringBuilder();
+                sb.Append("http://imsp.emome.net:8008/imsp/sms/servlet/QuerySM");
+                
+                sb.Append("?account=" + account);
+                sb.Append("&password=" + password);
+                sb.Append("&to_addr_type=0");
+                sb.Append("&to_addr=" + phone);
+                sb.Append("&messageid=" + msgid);
+
+                WebClient client = new WebClient();
+                string response = "";
+                //用using來自動關閉資源
+                using (Stream data = client.OpenRead(sb.ToString()))
+                {
+                    using (StreamReader reader = new StreamReader(data))
+                    {
+                        //讀取每一行
+                        while ((response = reader.ReadLine()) != null)
+                        {
+                            //直到<body>再讀取下一行
+                            if (response.StartsWith("<body>"))
+                            {
+                                //取得response後跳離
+                                response = reader.ReadLine();
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                //刪去結尾<br>標記
+                response = response.Replace("<br>", "");
+
+                //response拆解
+                string[] result = response.Split('|');
+
+                //回傳結果
+                return result;
+            }
+            catch (Exception ex)
+            {
+                string[] error = { "中華電信查詢發生例外錯誤" };
+                return error;
             }
         }
     }
