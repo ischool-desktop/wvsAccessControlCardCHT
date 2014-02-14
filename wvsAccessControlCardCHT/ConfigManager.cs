@@ -67,6 +67,15 @@ namespace wvsAccessControlCardCHT
                         BackupPath = _ConfigXml.Element("Backup").Attribute("Path").Value;
                 }
 
+                if (_ConfigXml.Element("CHT") != null)
+                {
+                    if (_ConfigXml.Element("CHT").Attribute("Account") != null)
+                        CHT_Account = _ConfigXml.Element("CHT").Attribute("Account").Value;
+
+                    if (_ConfigXml.Element("CHT").Attribute("Password") != null)
+                        CHT_Password = _ConfigXml.Element("CHT").Attribute("Password").Value;
+                }
+
             }
             catch (Exception ex)
             {
@@ -83,7 +92,8 @@ namespace wvsAccessControlCardCHT
         public string CAP_File { get; set; }
         public int CAP_WaitTime { get; set; }
         public string BackupPath { get; set; }
-
+        public string CHT_Account { get; set; }
+        public string CHT_Password { get; set; }
 
         /// <summary>
         /// 取得所有XML

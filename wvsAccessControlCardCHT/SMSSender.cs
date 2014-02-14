@@ -22,9 +22,9 @@ namespace wvsAccessControlCardCHT
         Dictionary<string, string> ReturnCodeDic;
 
         // 測試帳號
-        string account = "14525";
+        string account = Global._Config.CHT_Account;
         // 測試密碼
-        string password = "14525";
+        string password = Global._Config.CHT_Password;
 
         public SMSSender(QueryHelper _Q)
         {
