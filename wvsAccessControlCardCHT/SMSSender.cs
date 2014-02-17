@@ -22,13 +22,21 @@ namespace wvsAccessControlCardCHT
         Dictionary<string, string> ReturnCodeDic;
 
         // 測試帳號
-        string account = Global._Config.CHT_Account;
+        string account;
         // 測試密碼
-        string password = Global._Config.CHT_Password;
+        string password;
 
         public SMSSender(QueryHelper _Q)
         {
             this._Q = _Q;
+            //取得帳密
+            DataTable dt = _Q.Select("SELECT * FROM $cht_access_control_card.account");
+            foreach(DataRow row in dt.Rows)
+            {
+                account = row["account"].ToString();
+                password = row["password"].ToString();
+            }
+            //字典預設
             #region 中華電信回傳字典
             ReturnCodeDic = new Dictionary<string, string>();
             ReturnCodeDic.Add("-1", "系統或是資料庫故障。");

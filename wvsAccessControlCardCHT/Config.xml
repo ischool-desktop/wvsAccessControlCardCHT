@@ -11,7 +11,4 @@
   <!--讀完文字檔後，要搬移到此目錄中-->
   <Backup Path="D:\Backup" />
 
-  <!--中華電信發送帳密-->
-  <CHT Account="14525" Password="14525" />
-
 </Configuration>
