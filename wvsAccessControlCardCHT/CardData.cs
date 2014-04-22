@@ -155,7 +155,7 @@ namespace wvsAccessControlCardCHT
                 string day = Date.Substring(6, 2);
                 string hour = Time.Substring(0, 2);
                 string min = Time.Substring(2, 2);
-                return year + "-" + month + "-" + day + " " + hour + ":" + min + ":00";
+                return year + "-" + month + "-" + day + " " + hour + "時" + min + "分";
             }
         }
     }
